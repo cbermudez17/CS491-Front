@@ -12,6 +12,8 @@ import {
     emailValidator,
     passwordValidator,
     nameValidator,
+    telephoneValidator,
+    postData,
 } from '../util';
 
 type Props = {
@@ -19,23 +21,43 @@ type Props = {
 };
 
 const RegisterScreen = ({ navigation }: Props) => {
-    const [name, setName] = useState({ value: '', error: '' });
+    const [errorText, setErrorText] = useState('');
+    const [firstname, setFirstName] = useState({ value: '', error: '' });
+    const [lastname, setLastName] = useState({ value: '', error: '' });
     const [email, setEmail] = useState({ value: '', error: '' });
     const [password, setPassword] = useState({ value: '', error: '' });
+    const [phone, setPhone] = useState({ value: '', error: '' });
 
     const _onSignUpPressed = () => {
-        const nameError = nameValidator(name.value);
+        const firstnameError = nameValidator(firstname.value);
+        const lastnameError = nameValidator(lastname.value);
         const emailError = emailValidator(email.value);
         const passwordError = passwordValidator(password.value);
+        const phoneError = telephoneValidator(phone.value);
 
-        if (emailError || passwordError || nameError) {
-            setName({ ...name, error: nameError });
+        if (emailError || passwordError || firstnameError || lastnameError || phoneError) {
+            setFirstName({ ...firstname, error: firstnameError });
+            setLastName({ ...lastname, error: lastnameError });
             setEmail({ ...email, error: emailError });
             setPassword({ ...password, error: passwordError });
+            setPhone({ ...phone, error: phoneError });
             return;
         }
 
-        navigation.navigate('Dashboard');
+        postData('http://24.190.49.248:8000/register', {
+            firstname: firstname.value,
+            lastname: lastname.value,
+            email: email.value,
+            password: password.value,
+            phone: phone.value
+        })
+        .then(data => {
+            if (data.status == 'success') {
+                navigation.navigate('Dashboard');
+            } else {
+                setErrorText(data.message);
+            }
+        });
     };
 
     return (
@@ -43,13 +65,22 @@ const RegisterScreen = ({ navigation }: Props) => {
             <BackButton goBack={() => navigation.navigate('HomeScreen')} />
             <Logo />
             <Header>Create Account</Header>
+            {errorText ? <Text style={styles.error}>{errorText}</Text> : null}
             <TextInput
-                label="Name"
+                label="First Name"
                 returnKeyType="next"
-                value={name.value}
-                onChangeText={text => setName({ value: text, error: '' })}
-                error={!!name.error}
-                errorText={name.error}
+                value={firstname.value}
+                onChangeText={text => setFirstName({ value: text, error: '' })}
+                error={!!firstname.error}
+                errorText={firstname.error}
+            />
+            <TextInput
+                label="Last Name"
+                returnKeyType="next"
+                value={lastname.value}
+                onChangeText={text => setLastName({ value: text, error: '' })}
+                error={!!lastname.error}
+                errorText={lastname.error}
             />
             <TextInput
                 label="Email"
@@ -65,12 +96,23 @@ const RegisterScreen = ({ navigation }: Props) => {
             />
             <TextInput
                 label="Password"
-                returnKeyType="done"
+                returnKeyType="next"
                 value={password.value}
                 onChangeText={text => setPassword({ value: text, error: '' })}
                 error={!!password.error}
                 errorText={password.error}
                 secureTextEntry
+            />
+            <TextInput
+                label="Phone"
+                returnKeyType="done"
+                value={phone.value}
+                onChangeText={text => setPhone({ value: text, error: '' })}
+                error={!!phone.error}
+                errorText={phone.error}
+                autoCompleteType="tel"
+                textContentType="telephoneNumber"
+                keyboardType="phone-pad"
             />
             <Button mode="contained" onPress={_onSignUpPressed} style={styles.button}>
                 Sign Up
@@ -99,6 +141,12 @@ const styles = StyleSheet.create({
     link: {
         fontWeight: 'bold',
         color: theme.colors.primary,
+    },
+    error: {
+        fontSize: 14,
+        color: theme.colors.error,
+        paddingHorizontal: 4,
+        paddingTop: 4,
     },
 });
 

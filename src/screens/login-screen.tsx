@@ -7,7 +7,7 @@ import Button from '../components/button';
 import TextInput from '../components/text-input';
 import BackButton from '../components/back-button';
 import { theme } from '../theme';
-import { emailValidator, passwordValidator } from '../util';
+import { emailValidator, passwordValidator, postData } from '../util';
 import { Navigation } from '../types';
 
 type Props = {
@@ -15,6 +15,7 @@ type Props = {
 };
 
 const LoginScreen = ({ navigation }: Props) => {
+    const [errorText, setErrorText] = useState('');
     const [email, setEmail] = useState({ value: '', error: '' });
     const [password, setPassword] = useState({ value: '', error: '' });
 
@@ -28,7 +29,14 @@ const LoginScreen = ({ navigation }: Props) => {
             return;
         }
 
-        navigation.navigate('Dashboard');
+        postData('http://24.190.49.248:8000/login', {email: email.value, password: password.value})
+        .then(data => {
+            if (data.status == 'success') {
+                navigation.navigate('Dashboard');
+            } else {
+                setErrorText(data.message);
+            }
+        });
     };
 
     return (
@@ -36,6 +44,7 @@ const LoginScreen = ({ navigation }: Props) => {
             <BackButton goBack={() => navigation.navigate('HomeScreen')} />
             <Logo />
             <Header>Welcome back.</Header>
+            {errorText ? <Text style={styles.error}>{errorText}</Text> : null}
             <TextInput
                 label="Email"
                 returnKeyType="next"
@@ -91,6 +100,12 @@ const styles = StyleSheet.create({
     link: {
         fontWeight: 'bold',
         color: theme.colors.primary,
+    },
+    error: {
+        fontSize: 14,
+        color: theme.colors.error,
+        paddingHorizontal: 4,
+        paddingTop: 4,
     },
 });
 
