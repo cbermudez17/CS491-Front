@@ -25,20 +25,23 @@ const RegisterScreen = ({ navigation }: Props) => {
     const [firstname, setFirstName] = useState({ value: '', error: '' });
     const [lastname, setLastName] = useState({ value: '', error: '' });
     const [email, setEmail] = useState({ value: '', error: '' });
+    const [username, setUsername] = useState({ value: '', error: '' });
     const [password, setPassword] = useState({ value: '', error: '' });
     const [phone, setPhone] = useState({ value: '', error: '' });
 
     const _onSignUpPressed = () => {
         const firstnameError = nameValidator(firstname.value);
         const lastnameError = nameValidator(lastname.value);
+        const usernameError = nameValidator(username.value);
         const emailError = emailValidator(email.value);
         const passwordError = passwordValidator(password.value);
         const phoneError = telephoneValidator(phone.value);
 
-        if (emailError || passwordError || firstnameError || lastnameError || phoneError) {
+        if (emailError || usernameError || passwordError || firstnameError || lastnameError || phoneError) {
             setFirstName({ ...firstname, error: firstnameError });
             setLastName({ ...lastname, error: lastnameError });
             setEmail({ ...email, error: emailError });
+            setUsername({ ...username, error: usernameError });
             setPassword({ ...password, error: passwordError });
             setPhone({ ...phone, error: phoneError });
             return;
@@ -47,6 +50,7 @@ const RegisterScreen = ({ navigation }: Props) => {
         postData('http://24.190.49.248:8000/register', {
             firstname: firstname.value,
             lastname: lastname.value,
+            username: username.value,
             email: email.value,
             password: password.value,
             phone: phone.value
@@ -81,6 +85,14 @@ const RegisterScreen = ({ navigation }: Props) => {
                 onChangeText={text => setLastName({ value: text, error: '' })}
                 error={!!lastname.error}
                 errorText={lastname.error}
+            />
+            <TextInput
+                label="Username"
+                returnKeyType="next"
+                value={username.value}
+                onChangeText={text => setUsername({ value: text, error: '' })}
+                error={!!username.error}
+                errorText={username.error}
             />
             <TextInput
                 label="Email"
