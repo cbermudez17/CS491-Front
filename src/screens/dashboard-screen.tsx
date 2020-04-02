@@ -6,7 +6,7 @@ import Card from '../components/card';
 import CardDeck from '../components/card-deck';
 import { Navigation, Event } from '../types';
 import { FAB } from 'react-native-paper';
-import { Alert, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { theme } from '../theme';
 import { postData } from '../util';
 
@@ -60,7 +60,7 @@ const DashboardScreen = ({ navigation }: Props) => {
             <CardDeck tabLabel='Invited To'>{invitedEvents.length > 0 ? invitedEvents : <Text>Looks like there's no invitations to any events.</Text>}</CardDeck>
             <CardDeck tabLabel='Public Events'>{globalEvents.length > 0 ? globalEvents : <Text>Looks like there's nothing happening in your area.</Text>}</CardDeck>
         </ScrollableTabView>
-        <FAB style={styles.fab} icon="plus" onPress={() => Alert.alert('Pressed')} />
+        <FAB style={styles.fab} icon="plus" onPress={() => navigation.navigate('CreateEventScreen')} />
     </Background>
 )};
 
