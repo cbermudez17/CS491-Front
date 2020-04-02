@@ -1,9 +1,7 @@
 import React, { memo, useState, useEffect } from 'react';
 import { Text } from 'react-native';
-import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Background from '../components/background';
-import Logo from '../components/logo';
-import Header from '../components/header';
 import Card from '../components/card';
 import CardDeck from '../components/card-deck';
 import { Navigation, Event } from '../types';
@@ -47,8 +45,6 @@ const DashboardScreen = ({ navigation }: Props) => {
 
     return (
     <Background>
-        <Logo />
-        <Header>Let's Hang</Header>
         <ScrollableTabView
             style={{ marginTop: 20 }}
             tabBarActiveTextColor={theme.colors.primary}

@@ -5,7 +5,6 @@ import Logo from '../components/logo';
 import Header from '../components/header';
 import Button from '../components/button';
 import TextInput from '../components/text-input';
-import BackButton from '../components/back-button';
 import { theme } from '../theme';
 import { emailValidator, passwordValidator, postData } from '../util';
 import { Navigation } from '../types';
@@ -41,7 +40,6 @@ const LoginScreen = ({ navigation }: Props) => {
 
     return (
         <Background>
-            <BackButton goBack={() => navigation.navigate('HomeScreen')} />
             <Logo />
             <Header>Welcome back.</Header>
             {errorText ? <Text style={styles.error}>{errorText}</Text> : null}

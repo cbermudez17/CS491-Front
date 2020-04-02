@@ -1,17 +1,28 @@
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { HomeScreen, LoginScreen, RegisterScreen, Dashboard } from './screens';
+import {
+    LoginScreen,
+    RegisterScreen,
+    Dashboard,
+} from './screens';
+import { Platform } from 'react-native';
+import { theme } from './theme';
 
 const Router = createStackNavigator(
     {
-        HomeScreen,
-        LoginScreen,
-        RegisterScreen,
-        Dashboard,
+        LoginScreen: {screen: LoginScreen, navigationOptions: {title: "Login"}},
+        RegisterScreen: {screen: RegisterScreen, navigationOptions: {title: "Sign Up"}},
+        Dashboard: {screen: Dashboard, navigationOptions: {title: "Let's Hang"}},
     },
     {
-        initialRouteName: 'HomeScreen',
-        headerMode: 'none',
+        initialRouteName: 'LoginScreen',
+        headerMode: Platform.select({ios: 'float', android: 'screen'}),
+        defaultNavigationOptions: {
+            headerStyle: {backgroundColor: theme.colors.primary},
+            headerTitleStyle: {color: theme.colors.surface},
+            headerBackTitleVisible: false,
+            headerTintColor: theme.colors.surface,
+        },
     }
 );
 

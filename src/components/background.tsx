@@ -4,7 +4,7 @@ import {
     StyleSheet,
     KeyboardAvoidingView,
 } from 'react-native';
-import Constants from 'expo-constants';
+import { theme } from '../theme';
 
 type Props = {
     children: React.ReactNode;
@@ -25,9 +25,8 @@ const Background = ({ children }: Props) => (
 const styles = StyleSheet.create({
     background: {
         flex: 1,
-        marginTop: Constants.statusBarHeight,
         width: '100%',
-        backgroundColor: '#fff',
+        backgroundColor: theme.colors.surface,
     },
     container: {
         flex: 1,
