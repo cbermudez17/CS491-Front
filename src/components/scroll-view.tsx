@@ -2,14 +2,17 @@ import React, { memo } from 'react';
 import {
     StyleSheet,
     ScrollView as View,
+    StyleProp,
+    ViewStyle,
 } from 'react-native';
 
 type Props = {
-    children: React.ReactNode;
+    children: React.ReactNode,
+    style?: StyleProp<ViewStyle>,
 };
 
-const ScrollView = ({ children }: Props) => (
-    <View contentInsetAdjustmentBehavior="automatic" style={styles.scroll} contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+const ScrollView = ({ children, style }: Props) => (
+    <View contentInsetAdjustmentBehavior="automatic" style={[styles.scroll, style]} contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         {children}
     </View>
 );
