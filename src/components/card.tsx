@@ -79,8 +79,10 @@ const styles = StyleSheet.create({
     width: '100%',
     borderColor: theme.colors.secondary,
     borderRadius: 7,
-    borderWidth: 1,
     marginVertical: 12,
+    shadowOffset:{ width: 0, height: 10 },
+    shadowColor: 'black',
+    shadowOpacity: 0.2,
   },
   input: {
     backgroundColor: theme.colors.surface,
