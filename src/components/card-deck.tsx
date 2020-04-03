@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import ScrollView from './scroll-view';
 
 type Props = {
     tabLabel?: string,
@@ -7,7 +8,7 @@ type Props = {
 };
 
 const CardDeck = ({ children }: Props) => (
-    <View style={styles.deck}>{children}</View>
+    <ScrollView style={styles.deck}>{children}</ScrollView>
 );
 
 const styles = StyleSheet.create({
