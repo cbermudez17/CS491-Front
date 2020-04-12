@@ -6,7 +6,6 @@ The following requirements need to be installed on your development machine.
 1. Node JS v10+
 1. Git
 1. Expo CLI
-1. React Native Paper
 
 ## Cloning the Repository
 To clone the repository, run the following commands on your development machine.
@@ -14,7 +13,6 @@ To clone the repository, run the following commands on your development machine.
 ```bash
 cd {project_directory}
 git clone https://github.com/cbermudez17/CS491-Front.git
-npm i react-native-paper # This will install the Material Design Framework
 npm install # This will set up expo build tools
 ```
 
