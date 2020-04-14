@@ -1,4 +1,6 @@
-import { Alert } from "react-native";
+import { Alert, AsyncStorage } from "react-native";
+import { Navigation } from "./types";
+import { NavigationActions } from "react-navigation";
 
 export const emailValidator = (email: string) => {
     const re = /\S+@\S+\.\S+/;
@@ -57,3 +59,20 @@ export const postData = (url: string = '', data: object = {}) => {
     .then((response: Response) => response.json())
     .catch(error => {Alert.alert(JSON.stringify(error))});
 };
+
+export const storeData = async (key: string, value: string) =>
+    await AsyncStorage.setItem('@LetsHangStore:'+key, value);
+
+export const retrieveData = async (key: string) => {
+    try {
+        return await AsyncStorage.getItem('@LetsHangStore:'+key);
+    } catch (error) {
+        Alert.alert(error);
+    }
+};
+
+export const removeData = async (...keys: Array<string>) =>
+    await AsyncStorage.multiRemove(keys.map(key => '@LetsHangStore:'+key));
+
+export const resetNavigatorStack = (navigation: Navigation, routeName: string) =>
+    navigation.reset([NavigationActions.navigate({routeName})], 0);
