@@ -14,6 +14,8 @@ import {
     nameValidator,
     telephoneValidator,
     postData,
+    resetNavigatorStack,
+    storeData,
 } from '../util';
 
 type Props = {
@@ -57,7 +59,10 @@ const RegisterScreen = ({ navigation }: Props) => {
         })
         .then(data => {
             if (data.status == 'success') {
-                navigation.navigate('Dashboard');
+                storeData('username', username.value);
+                storeData('firstname', firstname.value);
+                storeData('lastname', lastname.value);
+                resetNavigatorStack(navigation, 'Dashboard');
             } else {
                 setErrorText(data.message);
             }

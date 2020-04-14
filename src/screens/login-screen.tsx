@@ -6,7 +6,7 @@ import Header from '../components/header';
 import Button from '../components/button';
 import TextInput from '../components/text-input';
 import { theme } from '../theme';
-import { emailValidator, passwordValidator, postData } from '../util';
+import { emailValidator, passwordValidator, postData, retrieveData, resetNavigatorStack, storeData } from '../util';
 import { Navigation } from '../types';
 
 type Props = {
@@ -14,6 +14,12 @@ type Props = {
 };
 
 const LoginScreen = ({ navigation }: Props) => {
+    retrieveData('username').then(data => {
+        if (data !== null) {
+            resetNavigatorStack(navigation, 'Dashboard');
+        }
+    });
+
     const [errorText, setErrorText] = useState('');
     const [email, setEmail] = useState({ value: '', error: '' });
     const [password, setPassword] = useState({ value: '', error: '' });
@@ -31,7 +37,10 @@ const LoginScreen = ({ navigation }: Props) => {
         postData('http://24.190.49.248:8000/login', {email: email.value, password: password.value})
         .then(data => {
             if (data.status == 'success') {
-                navigation.navigate('Dashboard');
+                storeData('username', data.username);
+                storeData('firstname', data.firstname);
+                storeData('lastname', data.lastname);
+                resetNavigatorStack(navigation, 'Dashboard');
             } else {
                 setErrorText(data.message);
             }
