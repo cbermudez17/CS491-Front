@@ -5,7 +5,7 @@ import Background from '../components/background';
 import Card from '../components/card';
 import CardDeck from '../components/card-deck';
 import { Navigation, Event } from '../types';
-import { FAB } from 'react-native-paper';
+import { FAB, Subheading } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import { theme } from '../theme';
 import { postData } from '../util';
@@ -56,9 +56,9 @@ const DashboardScreen = ({ navigation }: Props) => {
             tabBarActiveTextColor={theme.colors.primary}
             tabBarUnderlineStyle={{backgroundColor: theme.colors.primary}}
         >
-            <CardDeck tabLabel='My Events'>{myEvents.length > 0 ? myEvents : <Text>You have no events. Why don't you create one?</Text>}</CardDeck>
-            <CardDeck tabLabel='Invited To'>{invitedEvents.length > 0 ? invitedEvents : <Text>Looks like there's no invitations to any events.</Text>}</CardDeck>
-            <CardDeck tabLabel='Public Events'>{globalEvents.length > 0 ? globalEvents : <Text>Looks like there's nothing happening in your area.</Text>}</CardDeck>
+            <CardDeck tabLabel='My Events'>{myEvents.length > 0 ? myEvents : <Subheading>You have no events. Why don't you create one?</Subheading>}</CardDeck>
+            <CardDeck tabLabel='Invited To'>{invitedEvents.length > 0 ? invitedEvents : <Subheading>Looks like there's no invitations to any events.</Subheading>}</CardDeck>
+            <CardDeck tabLabel='Public Events'>{globalEvents.length > 0 ? globalEvents : <Subheading>Looks like there's nothing happening in your area.</Subheading>}</CardDeck>
         </ScrollableTabView>
         <FAB style={styles.fab} icon="plus" onPress={() => navigation.navigate('CreateEventScreen')} />
     </Background>
