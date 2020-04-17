@@ -6,10 +6,12 @@ import {
     RegisterScreen,
     Dashboard,
     CreateEventScreen,
+    ParticipantsScreen,
 } from './screens';
 import { Platform } from 'react-native';
 import { theme } from './theme';
 import LogoutButton from './components/logout-button';
+import SkipButton from './components/skip-button';
 
 const Router = createStackNavigator(
     {
@@ -17,6 +19,7 @@ const Router = createStackNavigator(
         RegisterScreen: {screen: RegisterScreen, navigationOptions: {title: "Sign Up"}},
         Dashboard: {screen: Dashboard, navigationOptions: {title: "Let's Hang", headerRight: () => <LogoutButton/>}},
         CreateEventScreen: {screen: CreateEventScreen, navigationOptions: {title: "Create New Event"}},
+        ParticipantsScreen: {screen: ParticipantsScreen, navigationOptions: {title: "Invite Friends", headerRight: () => <SkipButton/>}},
     },
     {
         initialRouteName: 'LoginScreen',
