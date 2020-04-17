@@ -1,20 +1,15 @@
 import React, { memo, useState } from 'react';
 import { Text, StyleSheet, View } from 'react-native';
-import { Modal } from 'react-native-paper';
 import Background from '../components/background';
 import Button from '../components/button';
 import TextInput from '../components/text-input';
 import { theme } from '../theme';
 import { Navigation } from '../types';
-import {
-    nameValidator,
-    dateValidator,
-    timeValidator,
-    postData,
-} from '../util';
+import { nameValidator, postData, retrieveData, resetNavigatorStack } from '../util';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Switch, Caption } from 'react-native-paper';
 import { Platform } from 'react-native';
+import ScrollView from '../components/scroll-view';
 
 type Props = {
     navigation: Navigation;
@@ -22,40 +17,79 @@ type Props = {
 
 const CreateEventScreen = ({ navigation }: Props) => {
     const [errorText, setErrorText] = useState('');
-    const [eventName, setEventName] = useState({ value: '', error: '' }); 
+    const [eventName, setEventName] = useState({ value: '', error: '' });
+    const [description, setDescription] = useState('');
+    const [date, setDate] = useState(new Date());
+    const [time, setTime] = useState(new Date());
+    const [showDate, setShowDate] = useState(false);
+    const [showTime, setShowTime] = useState(false);
     const [location, setLocation] = useState('');
     const [isPublic, setPublic] = useState(false);
-
-    const [date, setDate] = useState(new Date());
-    const [mode, setMode] = useState('date');
-    const [show, setShow] = useState(false);
-    const [time, setTime] = useState({ value: '' });
-
-    const showDatePicker = () => {
-        if (show === false)
-            showMode('date');
-        else
-            setShow(false);
-
+    
+    const extractLocalTime = (time: Date) => {
+        let t = time.toLocaleTimeString();
+        if (Platform.OS === 'ios') {
+            let end = t.lastIndexOf(':');
+            return t.substring(0, end) + t.substr(t.length - 2);
+        } else {
+            let timeParts = t.split(':');
+            let hours = parseInt(timeParts[0]);
+            let minutes = timeParts[1];
+            if (hours == 0) {
+                return '12:' + minutes + 'AM';
+            } else if (hours < 12) {
+                return hours + ':' + minutes + 'AM';
+            } else if (hours == 12) {
+                return '12:' + minutes + 'PM';
+            } else {
+                return (hours-12) + ':' + minutes + 'PM';
+            }
+        }
     };
 
-    const showTimePicker = () => {
-        if (show === false)
-            showMode('time');
-        else
-            setShow(false);
+    const extractUTCTime = (time: Date) => {
+        let hours = time.getUTCHours().toString();
+        let minutes = time.getUTCMinutes().toString();
+        if (hours.length < 2) {
+            hours = '0' + hours;
+        }
+        if (minutes.length < 2) {
+            minutes = '0' + minutes;
+        }
+        return hours + ':' + minutes;
     };
 
-    const showMode = currentMode => {
-        setShow(true);
-        setMode(currentMode);
+    const extractUTCDate = (date: Date, time: Date) => {
+        let d = new Date(date.getTime());
+        d.setHours(time.getHours());
+        d.setMinutes(time.getMinutes());
+        let year = d.getUTCFullYear().toString();
+        let month = (d.getUTCMonth() + 1).toString();
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+        let day = d.getUTCDate().toString();
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+        return [year, month, day].join('/');
     };
 
-    const onChange = (event, selectedDate) => {
+    const toggleDatePicker = () => setShowDate(!showDate);
+
+    const onDateChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
-
-        setShow(Platform.OS === 'ios');
+        setShowDate(Platform.OS === 'ios');
         setDate(currentDate);
+        if (Platform.OS === 'ios') {
+            setTime(currentDate);
+        }
+    };
+
+    const onTimeChange = (event, selectedTime) => {
+        const currentTime = selectedTime || time;
+        setShowTime(false);
+        setTime(currentTime);
     };
 
     const _onCreatePressed = () => {
@@ -65,40 +99,37 @@ const CreateEventScreen = ({ navigation }: Props) => {
             setEventName({ ...eventName, error: eventNameError });
             return;
         }
-        /*
-        if (eventNameError || dateError || timeError) {
-            setEventName({ ...eventName, error: eventNameError });
-            setDate({ ...date, error: dateError });
-            setTime({ ...time, error: timeError });
-            return;
-        }
-        
+
+        let username = retrieveData('username');
+        let firstname = retrieveData('firstname');
+        let lastname = retrieveData('lastname');
+
         postData('http://24.190.49.248:8000/createEvent', {
             name: eventName.value,
-            username: 'wjmccann',
-            firstname: "first name",
-            lastname: "last name",
+            username,
+            firstname,
+            lastname,
+            description,
             location: { lat: 7, lng: 7 },
             participants: [],
-            date: date.value,
-            time: time.value,
+            date: extractUTCDate(date, time),
+            time: extractUTCTime(time),
             type: isPublic ? 'public' : 'private',
         })
         .then(data => {
             if (data.status == 'success') {
-                navigation.navigate('Dashboard');
+                // TODO replace this oid with the returned oid from the post response
+                let oid = "5e9941c4d200467455dd5de8";
+                resetNavigatorStack(navigation, 'ParticipantsScreen', {oid});
             } else {
                 setErrorText(data.message);
             }
         });
-        */
-
     };
 
     return (
-
-        <Background >
-            <View style={styles.container}>
+        <Background>
+            <ScrollView>
                 {errorText ? <Text style={styles.error}>{errorText}</Text> : null}
                 <TextInput
                     label="Event Name"
@@ -108,45 +139,55 @@ const CreateEventScreen = ({ navigation }: Props) => {
                     error={!!eventName.error}
                     errorText={eventName.error}
                 />
-
+                <TextInput
+                    label="Description"
+                    returnKeyType="next"
+                    value={description}
+                    onChangeText={setDescription}
+                    multiline={true}
+                />
                 <View style={styles.container}>
-                    <Button mode="text" onPress={showTimePicker}>Select event time</Button>
-                    <Button mode="text" onPress={showDatePicker}>Select date</Button>
-                    {show &&
+                    <Button mode="text" onPress={toggleDatePicker}>{Platform.OS === 'ios' ? date.toLocaleDateString() + ' ' + extractLocalTime(time) : date.toLocaleDateString()}</Button>
+                    {Platform.OS === 'ios' ? null : <Button mode="text" onPress={() => setShowTime(true)}>{extractLocalTime(time)}</Button>}
+                    {showDate &&
                         (<DateTimePicker
-                            testID="dateTimePicker"
-                            timeZoneOffsetInMinutes={0}
                             value={date}
-                            mode={mode}
-                            is24Hour={true}
-                            display="default"
-                            onChange={onChange}
+                            mode={Platform.OS === 'ios' ? 'datetime' : 'date'}
+                            minimumDate={new Date()}
+                            onChange={onDateChange}
                         />
-                        )}
+                    )}
+                    {showTime &&
+                        (<DateTimePicker
+                            value={time}
+                            mode="time"
+                            is24Hour={true}
+                            minimumDate={new Date()}
+                            display="spinner"
+                            onChange={onTimeChange}
+                        />
+                    )}
                 </View>
-
                 <TextInput
                     label="Location"
                     returnKeyType="next"
                     value={location}
                     onChangeText={setLocation}
                 />
-
-                <View style={{ width: '100%', flexDirection: "row", }}>
-                    <Caption style={{ fontSize: 18, textAlignVertical: 'center', flex: 1 }}>Public Event</Caption>
+                <View style={{width:'100%', flexDirection:"row",}}>
+                    <Caption style={{fontSize:18,textAlignVertical:'center',flex:1}}>Public Event</Caption>
                     <Switch
                         value={isPublic}
                         onValueChange={setPublic}
                         color={theme.colors.primary}
-                        style={{ flex: 1 }}
+                        style={{flex:1}}
                     />
                 </View>
                 <Button mode="contained" onPress={_onCreatePressed} style={styles.button}>
                     Create Event
-            </Button>
-            </View>
+                </Button>
+            </ScrollView>
         </Background>
-
     );
 };
 
