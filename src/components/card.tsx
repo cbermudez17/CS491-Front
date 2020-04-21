@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Share } from 'react-native';
-import { Card as PaperCard, Button, Modal, IconButton } from 'react-native-paper';
+import { Card as PaperCard, Button, Modal, IconButton, Surface } from 'react-native-paper';
 import { theme } from '../theme';
 import { Location } from '../types';
 
@@ -37,75 +37,61 @@ const Card = ({ title, location, uri = 'https://picsum.photos/700', date, host, 
   const [pressed, toggle] = useState(false);
 
   return (
-    <View style={styles.container}>
+    <Surface style={styles.container}>
       <TouchableOpacity onPress={() => toggle(!pressed)}>
         <PaperCard>
           <PaperCard.Cover source={{ uri }} />
           <PaperCard.Title title={title} />
           <PaperCard.Content>
-            <View style={styles.row}>
-              <Text style={styles.subtitle}>{host}</Text>
+            <View>
+              <Text style={styles.subtitle}>{location.name}</Text>
             </View>
-            <View style={styles.row}>
-              <Text style={styles.subtitle}>{location.lat.toString() + ',' + location.lng.toString()}</Text>
-            </View>
-            <View style={styles.row}>
+            <View>
               <Text style={styles.subtitle}>{date}</Text>
             </View>
-            <View style={styles.row}>
-              <IconButton icon="share" size={20} animated={true} onPress={() => shareMedia(title)}></IconButton>
-              <IconButton icon="content-save" size={20} ></IconButton>
-              <IconButton icon="calendar-question" size={20}></IconButton>
+            <View>
+              <Text style={styles.subtitle}>{host}</Text>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <IconButton icon="share" size={20} color={theme.colors.secondary} animated={true} onPress={() => shareMedia(title)} />
+              <IconButton icon="content-save" size={20} color={theme.colors.secondary} />
+              <IconButton icon="calendar-question" size={20} color={theme.colors.secondary} />
             </View>
           </PaperCard.Content>
         </PaperCard>
       </TouchableOpacity>
 
-      <Modal visible={pressed}>
-        <View style={styles.modal}>
-          <View style={styles.description}>
-            {children}
-          </View>
-          <View>
-            <Button onPress={() => toggle(!pressed)}>Go back</Button>
-          </View>
+      <Modal visible={pressed} contentContainerStyle={styles.modal}>
+        <View style={styles.description}>
+          {children}
+        </View>
+        <View>
+          <Button onPress={() => toggle(!pressed)}>Go back</Button>
         </View>
       </Modal>
-    </View>);
+    </Surface>);
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    width: '99.5%',
     borderColor: theme.colors.secondary,
+    borderWidth: 0.1,
     borderRadius: 7,
-    marginVertical: 12,
-    shadowOffset:{ width: 0, height: 10 },
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-  },
-  input: {
-    backgroundColor: theme.colors.surface,
+    marginVertical: 15,
+    elevation: 4,
   },
   modal: {
     width: '100%',
     height: '100%',
-    borderRadius: 5,
+    borderRadius: 7,
     backgroundColor: theme.colors.surface,
   },
   description: {
-    height: '85%',
-    margin: 5,
-    borderRadius: 10,
-    padding: 5
+    padding: 20,
   },
   subtitle: {
     color: "grey",
-  },
-  row: {
-    flexDirection: 'row',
-    borderBottomColor: 'black',
-    borderBottomWidth: 1,
   },
 });
 
