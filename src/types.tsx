@@ -3,7 +3,7 @@ export type Navigation = {
     goBack: () => void,
     dispatch: (action: any) => void,
     reset: (actions: Array<any>, index: number) => void,
-    getParam: (paramName: string, defaultValue?: any) => void,
+    getParam: (paramName: string, defaultValue?: any) => string,
 };
 
 export type User = {

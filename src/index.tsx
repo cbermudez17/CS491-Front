@@ -7,6 +7,7 @@ import {
     Dashboard,
     CreateEventScreen,
     ParticipantsScreen,
+    ProfileScreen,
 } from './screens';
 import { Platform } from 'react-native';
 import { theme } from './theme';
@@ -20,6 +21,7 @@ const Router = createStackNavigator(
         Dashboard: {screen: Dashboard, navigationOptions: {title: "Let's Hang", headerRight: () => <LogoutButton/>}},
         CreateEventScreen: {screen: CreateEventScreen, navigationOptions: {title: "Create New Event"}},
         ParticipantsScreen: {screen: ParticipantsScreen, navigationOptions: {title: "Invite Friends", headerRight: () => <SkipButton/>}},
+        ProfileScreen: {screen: ProfileScreen, navigationOptions: {title: "User Profile"}},
     },
     {
         initialRouteName: 'LoginScreen',
