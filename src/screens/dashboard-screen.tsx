@@ -8,7 +8,7 @@ import { Navigation, Event } from '../types';
 import { FAB, Subheading } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import { theme } from '../theme';
-import { postData } from '../util';
+import { postData, retrieveData } from '../util';
 
 type Props = {
     navigation: Navigation;
@@ -20,14 +20,21 @@ const DashboardScreen = ({ navigation }: Props) => {
     const [globalEvents, setGlobalEvents] = useState([]);
 
     const localizeDate = (date: string, time: string) => {
-        let d = new Date(date.substring(5)+'/'+date.substr(0, 4));
-        d.setHours(parseInt(time.substr(0,2)));
-        d.setMinutes(parseInt(time.substr(3)));
-        return d.toLocaleString();
+        let year = date.substr(0, 4), month = date.substr(5, 2), day = date.substr(8),
+        hour = parseInt(time.substr(0, 2)), minutes = time.substr(3), meridian = 'AM';
+        if (hour == 0) {
+            hour = 12;
+        } else if (hour >= 12) {
+            meridian = 'PM';
+            if (hour > 12) {
+                hour -= 12;
+            }
+        }
+        return `${month}/${day}/${year} ${hour}:${minutes}${meridian}`;
     };
 
     useEffect(() => {
-        postData('http://24.190.49.248:8000/getEvents', {username: 'wjmccann'})
+        retrieveData('username').then(username => postData('http://24.190.49.248:8000/getEvents', {username}))
         .then(data => {
             let acceptedEvents = [], notAcceptedEvents = [];
             data.friends.forEach((event: Event) => event.status == 'accepted' ? acceptedEvents.push(event) : notAcceptedEvents.push(event));
@@ -52,7 +59,7 @@ const DashboardScreen = ({ navigation }: Props) => {
     return (
     <Background>
         <ScrollableTabView
-            style={{ marginTop: 20 }}
+            style={styles.tab}
             tabBarActiveTextColor={theme.colors.primary}
             tabBarUnderlineStyle={{backgroundColor: theme.colors.primary}}
         >
@@ -65,6 +72,11 @@ const DashboardScreen = ({ navigation }: Props) => {
 )};
 
 const styles = StyleSheet.create({
+    tab: {
+        marginTop: 20,
+        flex: 1,
+        width: '100%',
+    },
     fab: {
         position: 'absolute',
         margin: 16,        
