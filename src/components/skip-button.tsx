@@ -9,6 +9,6 @@ type Props = {
     navigation?: Navigation;
 };
 
-const SkipButton = ({ navigation }: Props) => (<Button mode="text" color={theme.colors.surface} onPress={() => resetNavigatorStack(navigation, 'Dashboard')}>Skip</Button>);
+const SkipButton = ({ navigation }: Props) => (<Button mode="text" color={theme.colors.background} onPress={() => resetNavigatorStack(navigation, 'Dashboard')}>Skip</Button>);
 
 export default memo(withNavigation(SkipButton));

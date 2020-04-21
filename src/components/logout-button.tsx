@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Navigation } from '../types';
-import { IconButton } from 'react-native-paper';
+import { Appbar } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import { theme } from '../theme';
 import { removeData, resetNavigatorStack } from '../util';
@@ -14,6 +14,6 @@ const _onLogoutPressed = (navigation: Navigation) => {
     resetNavigatorStack(navigation, 'LoginScreen');
 };
 
-const LogoutButton = ({ navigation }: Props) => (<IconButton color={theme.colors.surface} icon="logout-variant" onPress={() => _onLogoutPressed(navigation)} />);
+const LogoutButton = ({ navigation }: Props) => (<Appbar.Action icon="logout-variant" color={theme.colors.background} onPress={() => _onLogoutPressed(navigation)} />);
 
 export default memo(withNavigation(LogoutButton));
