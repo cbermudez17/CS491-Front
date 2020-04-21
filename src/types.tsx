@@ -16,8 +16,9 @@ export type User = {
 };
 
 export type Location = {
-    lat: number,
-    lng: number,
+    name: string,
+    latitude?: number,
+    longitude?: number,
 };
 
 export type Event = {
@@ -25,6 +26,7 @@ export type Event = {
     firstname: string,
     lastname: string,
     username: string,
+    description: string,
     location: Location,
     phone?: string,
     participants: Array<User>,

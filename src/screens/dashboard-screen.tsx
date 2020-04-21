@@ -33,26 +33,20 @@ const DashboardScreen = ({ navigation }: Props) => {
         return `${month}/${day}/${year} ${hour}:${minutes}${meridian}`;
     };
 
+    const eventToCard = (event: Event) => (
+        <Card key={event.username+event.name} title={event.name} location={event.location} date={localizeDate(event.date, event.time)} host={event.username}>
+            <Text>{event.description}</Text>
+        </Card>
+    );
+
     useEffect(() => {
         retrieveData('username').then(username => postData('http://24.190.49.248:8000/getEvents', {username}))
         .then(data => {
             let acceptedEvents = [], notAcceptedEvents = [];
             data.friends.forEach((event: Event) => event.status == 'accepted' ? acceptedEvents.push(event) : notAcceptedEvents.push(event));
-            setMyEvents(data.mine.concat(acceptedEvents).map((event: Event) => (
-                <Card key={event.username+event.name} title={event.name} location={event.location} date={localizeDate(event.date, event.time)} host={event.username}>
-                    <Text>This is the description placeholder for {event.name}.</Text>
-                </Card>)
-            ));
-            setInvitedEvents(notAcceptedEvents.map((event: Event) => (
-                <Card key={event.username+event.name} title={event.name} location={event.location} date={localizeDate(event.date, event.time)} host={event.username}>
-                    <Text>This is the description placeholder for {event.name}. Invitation status: {event.status}</Text>
-                </Card>)
-            ));
-            setGlobalEvents(data.public.map((event: Event) => (
-                <Card key={event.username+event.name} title={event.name} location={event.location} date={localizeDate(event.date, event.time)} host={event.username}>
-                    <Text>This is the description placeholder for {event.name}. Invitation status: {event.status}</Text>
-                </Card>)
-            ));
+            setMyEvents(data.mine.concat(acceptedEvents).map(eventToCard));
+            setInvitedEvents(notAcceptedEvents.map(eventToCard));
+            setGlobalEvents(data.public.map(eventToCard));
         });
     }, []);
 
