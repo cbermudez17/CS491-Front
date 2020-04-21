@@ -1,5 +1,6 @@
 import React, { memo, useState } from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
 import Background from '../components/background';
 import Button from '../components/button';
 import TextInput from '../components/text-input';
@@ -16,7 +17,6 @@ type Props = {
 };
 
 const CreateEventScreen = ({ navigation }: Props) => {
-    const [errorText, setErrorText] = useState('');
     const [eventName, setEventName] = useState({ value: '', error: '' });
     const [description, setDescription] = useState('');
     const [date, setDate] = useState(new Date());
@@ -24,6 +24,8 @@ const CreateEventScreen = ({ navigation }: Props) => {
     const [showDate, setShowDate] = useState(false);
     const [showTime, setShowTime] = useState(false);
     const [location, setLocation] = useState({ value: '', error: '' });
+    const [showMap, setShowMap] = useState(true);
+    const [marker, setMarker] = useState({latitude: 40.7418, longitude: -74.1787});
     const [isPublic, setPublic] = useState(false);
     
     const extractLocalTime = (time: Date) => {
@@ -112,27 +114,18 @@ const CreateEventScreen = ({ navigation }: Props) => {
             firstname,
             lastname,
             description,
-            location: { lat: 7, lng: 7 },
+            location: showMap ? {name: location.value, latitude: marker.latitude, longitude: marker.longitude} : {name: location.value},
             participants: [],
             date: extractUTCDate(date, time),
             time: extractUTCTime(time),
             type: isPublic ? 'public' : 'private',
         })
-        .then(data => {
-            if (data.status == 'success') {
-                // TODO replace this oid with the returned oid from the post response
-                let oid = "5e9941c4d200467455dd5de8";
-                resetNavigatorStack(navigation, 'ParticipantsScreen', {oid});
-            } else {
-                setErrorText(data.message);
-            }
-        });
+        .then(data => resetNavigatorStack(navigation, 'ParticipantsScreen', {oid: data["_id"]["$oid"]}));
     };
 
     return (
         <Background>
             <ScrollView>
-                {errorText ? <Text style={styles.error}>{errorText}</Text> : null}
                 <TextInput
                     label="Event Name"
                     returnKeyType="next"
@@ -178,13 +171,35 @@ const CreateEventScreen = ({ navigation }: Props) => {
                     error={!!location.error}
                     errorText={location.error}
                 />
-                <View style={{width:'100%', flexDirection:"row",}}>
-                    <Caption style={{fontSize:18,textAlignVertical:'center',flex:1}}>Public Event</Caption>
+                <View style={styles.switchContainer}>
+                    <Caption style={styles.switchCaption}>Select On Map</Caption>
+                    <Switch
+                        value={showMap}
+                        onValueChange={setShowMap}
+                        color={theme.colors.primary}
+                        style={styles.switch}
+                    />
+                </View>
+                {showMap &&
+                    (<View style={styles.container}>
+                        <MapView
+                            style={styles.mapStyle}
+                            provider="google"
+                            showsUserLocation={true}
+                            initialRegion={{latitude: 40.7418, longitude: -74.1787, latitudeDelta: 0.0922, longitudeDelta: 0.0421}}
+                            onLongPress={e => setMarker(e.nativeEvent.coordinate)}
+                        >
+                            <Marker coordinate={marker} onDragEnd={e => setMarker(e.nativeEvent.coordinate)} draggable />
+                        </MapView>
+                    </View>
+                )}
+                <View style={styles.switchContainer}>
+                    <Caption style={styles.switchCaption}>Public Event</Caption>
                     <Switch
                         value={isPublic}
                         onValueChange={setPublic}
                         color={theme.colors.primary}
-                        style={{flex:1}}
+                        style={styles.switch}
                     />
                 </View>
                 <Button mode="contained" onPress={_onCreatePressed} style={styles.button}>
@@ -198,6 +213,24 @@ const CreateEventScreen = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
     container: {
         width: '100%'
+    },
+    mapStyle: {
+        width: 300,
+        height: 300,
+        marginVertical: 20
+    },
+    switchContainer: {
+        width: '100%',
+        flexDirection: 'row',
+        marginTop: 15,
+    },
+    switchCaption: {
+        fontSize: 18,
+        textAlignVertical: 'center',
+        flex:1,
+    },
+    switch: {
+        flex: 1,
     },
     label: {
         color: theme.colors.secondary,
