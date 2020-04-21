@@ -5,7 +5,7 @@ import Button from '../components/button';
 import TextInput from '../components/text-input';
 import { theme } from '../theme';
 import { Navigation } from '../types';
-import { nameValidator, postData, retrieveData, resetNavigatorStack } from '../util';
+import { postData, retrieveData, resetNavigatorStack, emptyValidator } from '../util';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Switch, Caption } from 'react-native-paper';
 import { Platform } from 'react-native';
@@ -23,7 +23,7 @@ const CreateEventScreen = ({ navigation }: Props) => {
     const [time, setTime] = useState(new Date());
     const [showDate, setShowDate] = useState(false);
     const [showTime, setShowTime] = useState(false);
-    const [location, setLocation] = useState('');
+    const [location, setLocation] = useState({ value: '', error: '' });
     const [isPublic, setPublic] = useState(false);
     
     const extractLocalTime = (time: Date) => {
@@ -93,10 +93,12 @@ const CreateEventScreen = ({ navigation }: Props) => {
     };
 
     const _onCreatePressed = () => {
-        const eventNameError = nameValidator(eventName.value);
+        const eventNameError = emptyValidator(eventName.value, 'Event name');
+        const locationError = emptyValidator(location.value, 'Location');
 
-        if (eventNameError) {
+        if (eventNameError || locationError) {
             setEventName({ ...eventName, error: eventNameError });
+            setLocation({ ...location, error: locationError });
             return;
         }
 
@@ -171,8 +173,10 @@ const CreateEventScreen = ({ navigation }: Props) => {
                 <TextInput
                     label="Location"
                     returnKeyType="next"
-                    value={location}
-                    onChangeText={setLocation}
+                    value={location.value}
+                    onChangeText={text => setLocation({ value: text, error: '' })}
+                    error={!!location.error}
+                    errorText={location.error}
                 />
                 <View style={{width:'100%', flexDirection:"row",}}>
                     <Caption style={{fontSize:18,textAlignVertical:'center',flex:1}}>Public Event</Caption>

@@ -11,11 +11,12 @@ import { Navigation } from '../types';
 import {
     emailValidator,
     passwordValidator,
-    nameValidator,
+    usernameValidator,
     telephoneValidator,
     postData,
     resetNavigatorStack,
     storeData,
+    emptyValidator,
 } from '../util';
 
 type Props = {
@@ -32,9 +33,9 @@ const RegisterScreen = ({ navigation }: Props) => {
     const [phone, setPhone] = useState({ value: '', error: '' });
 
     const _onSignUpPressed = () => {
-        const firstnameError = nameValidator(firstname.value);
-        const lastnameError = nameValidator(lastname.value);
-        const usernameError = nameValidator(username.value);
+        const firstnameError = emptyValidator(firstname.value, 'First name');
+        const lastnameError = emptyValidator(lastname.value, 'Last name');
+        const usernameError = usernameValidator(username.value);
         const emailError = emailValidator(email.value);
         const passwordError = passwordValidator(password.value);
         const phoneError = telephoneValidator(phone.value);

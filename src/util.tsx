@@ -17,9 +17,12 @@ export const passwordValidator = (password: string) => {
     return '';
 };
 
-export const nameValidator = (name: string) => {
-    if (!name || name.length <= 0)
-        return 'Name cannot be empty.';
+export const usernameValidator = (username: string) => {
+    const re = /^[A-Za-z0-9.\-_$!]{4,10}$/;
+    if (!username || username.length <= 0)
+        return 'Username cannot be empty.';
+    if (!re.test(username))
+        return 'Username must be 4-10 characters long and only use letters, numbers, and any of the following {.-_$!}.';
     return '';
 };
 
@@ -29,6 +32,12 @@ export const telephoneValidator = (phone: string) => {
         return 'Phone number cannot be empty.';
     if (!re.test(phone))
         return 'Ooops! We need a valid phone number.';
+    return '';
+};
+
+export const emptyValidator = (value: string, valueName: string) => {
+    if (!value || value.length <= 0)
+        return valueName + ' cannot be empty.';
     return '';
 };
 
