@@ -18,7 +18,7 @@ type Props = {
 
 const CreateEventScreen = ({ navigation }: Props) => {
     const [eventName, setEventName] = useState({ value: '', error: '' });
-    const [description, setDescription] = useState('');
+    const [description, setDescription] = useState({ value: '', error: '' });
     const [date, setDate] = useState(new Date());
     const [time, setTime] = useState(new Date());
     const [showDate, setShowDate] = useState(false);
@@ -96,6 +96,7 @@ const CreateEventScreen = ({ navigation }: Props) => {
 
     const _onCreatePressed = () => {
         const eventNameError = emptyValidator(eventName.value, 'Event name');
+        const descriptionError = emptyValidator(description.value, 'Description');
         const locationError = emptyValidator(location.value, 'Location');
 
         if (eventNameError || locationError) {
@@ -113,7 +114,7 @@ const CreateEventScreen = ({ navigation }: Props) => {
             username,
             firstname,
             lastname,
-            description,
+            description: description.value,
             location: showMap ? {name: location.value, latitude: marker.latitude, longitude: marker.longitude} : {name: location.value},
             participants: [],
             date: extractUTCDate(date, time),
@@ -137,8 +138,8 @@ const CreateEventScreen = ({ navigation }: Props) => {
                 <TextInput
                     label="Description"
                     returnKeyType="next"
-                    value={description}
-                    onChangeText={setDescription}
+                    value={description.value}
+                    onChangeText={text => setDescription({ value: text, error: '' })}
                     multiline={true}
                 />
                 <View style={styles.container}>
