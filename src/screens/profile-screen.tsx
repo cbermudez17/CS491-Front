@@ -115,10 +115,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     greenChip: {
-        backgroundColor: '#090',
+        backgroundColor: theme.colors.green,
     },
     redChip: {
-        backgroundColor: '#c00',
+        backgroundColor: theme.colors.red,
     },
     chip: {
         marginBottom: 20,
