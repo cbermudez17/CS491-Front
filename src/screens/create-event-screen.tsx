@@ -94,26 +94,23 @@ const CreateEventScreen = ({ navigation }: Props) => {
         setTime(currentTime);
     };
 
-    const _onCreatePressed = () => {
+    const _onCreatePressed = async () => {
         const eventNameError = emptyValidator(eventName.value, 'Event name');
         const descriptionError = emptyValidator(description.value, 'Description');
         const locationError = emptyValidator(location.value, 'Location');
 
-        if (eventNameError || locationError) {
+        if (eventNameError || locationError || descriptionError) {
             setEventName({ ...eventName, error: eventNameError });
             setLocation({ ...location, error: locationError });
+            setDescription({ ...description, error: descriptionError });
             return;
         }
 
-        let username = retrieveData('username');
-        let firstname = retrieveData('firstname');
-        let lastname = retrieveData('lastname');
+        let username = await retrieveData('username');
 
         postData('http://24.190.49.248:8000/createEvent', {
             name: eventName.value,
             username,
-            firstname,
-            lastname,
             description: description.value,
             location: showMap ? {name: location.value, latitude: marker.latitude, longitude: marker.longitude} : {name: location.value},
             participants: [],

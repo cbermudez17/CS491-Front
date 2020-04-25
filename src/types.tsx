@@ -23,8 +23,6 @@ export type Location = {
 
 export type Event = {
     name: string,
-    firstname: string,
-    lastname: string,
     username: string,
     description: string,
     location: Location,
@@ -32,5 +30,6 @@ export type Event = {
     participants: Array<User>,
     date: string,
     time: string,
-    status?: string,
+    status?: 'invited' | 'accepted',
+    type: 'public' | 'private',
 };
