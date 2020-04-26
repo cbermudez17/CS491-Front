@@ -135,9 +135,11 @@ const CreateEventScreen = ({ navigation }: Props) => {
                 <TextInput
                     label="Description"
                     returnKeyType="next"
+                    multiline={true}
                     value={description.value}
                     onChangeText={text => setDescription({ value: text, error: '' })}
-                    multiline={true}
+                    error={!!description.error}
+                    errorText={description.error}
                 />
                 <View style={styles.container}>
                     <Button mode="text" onPress={toggleDatePicker}>{Platform.OS === 'ios' ? date.toLocaleDateString() + ' ' + extractLocalTime(time) : date.toLocaleDateString()}</Button>
