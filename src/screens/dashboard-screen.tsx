@@ -17,21 +17,36 @@ const DashboardScreen = ({ navigation }: Props) => {
     const [myEvents, setMyEvents] = useState([]);
     const [invitedEvents, setInvitedEvents] = useState([]);
     const [globalEvents, setGlobalEvents] = useState([]);
+    const [username, setUsername] = useState('');
 
     const eventToCard = (event: Event) => (
         <Card key={event.username+event.name} event={event} navigation={navigation} />
     );
 
     useEffect(() => {
-        retrieveData('username').then(username => postData('http://24.190.49.248:8000/getEvents', {username}))
+        retrieveData('username').then(username => {
+            setUsername(username);
+            return postData('http://24.190.49.248:8000/getEvents', {username});
+        })
         .then(data => {
             let acceptedEvents = [], notAcceptedEvents = [];
             data.friends.forEach((event: Event) => event.status == 'accepted' ? acceptedEvents.push(event) : notAcceptedEvents.push(event));
             setMyEvents(data.mine.concat(acceptedEvents).map(eventToCard));
             setInvitedEvents(notAcceptedEvents.map(eventToCard));
-            setGlobalEvents(data.public.map(eventToCard));
+            setGlobalEvents(data.public.filter((event: Event) => event.username != username).map(eventToCard));
         });
-    }, []);
+    }, [username]);
+
+    const onRefresh = () => {
+        return postData('http://24.190.49.248:8000/getEvents', {username})
+        .then(data => {
+            let acceptedEvents = [], notAcceptedEvents = [];
+            data.friends.forEach((event: Event) => event.status == 'accepted' ? acceptedEvents.push(event) : notAcceptedEvents.push(event));
+            setMyEvents(data.mine.concat(acceptedEvents).map(eventToCard));
+            setInvitedEvents(notAcceptedEvents.map(eventToCard));
+            setGlobalEvents(data.public.filter((event: Event) => event.username != username).map(eventToCard));
+        });
+    };
 
     return (
     <Background>
@@ -40,9 +55,9 @@ const DashboardScreen = ({ navigation }: Props) => {
             tabBarActiveTextColor={theme.colors.primary}
             tabBarUnderlineStyle={{backgroundColor: theme.colors.primary}}
         >
-            <CardDeck tabLabel='My Events'>{myEvents.length > 0 ? myEvents : <Subheading>You have no events. Why don't you create one?</Subheading>}</CardDeck>
-            <CardDeck tabLabel='Invited To'>{invitedEvents.length > 0 ? invitedEvents : <Subheading>Looks like there's no invitations to any events.</Subheading>}</CardDeck>
-            <CardDeck tabLabel='Public Events'>{globalEvents.length > 0 ? globalEvents : <Subheading>Looks like there's nothing happening in your area.</Subheading>}</CardDeck>
+            <CardDeck tabLabel='My Events' onRefresh={onRefresh}>{myEvents.length > 0 ? myEvents : <Subheading>You have no events. Why don't you create one?</Subheading>}</CardDeck>
+            <CardDeck tabLabel='Invited To' onRefresh={onRefresh}>{invitedEvents.length > 0 ? invitedEvents : <Subheading>Looks like there's no invitations to any events.</Subheading>}</CardDeck>
+            <CardDeck tabLabel='Public Events' onRefresh={onRefresh}>{globalEvents.length > 0 ? globalEvents : <Subheading>Looks like there's nothing happening in your area.</Subheading>}</CardDeck>
         </ScrollableTabView>
         <FAB style={styles.fab} icon="plus" onPress={() => navigation.navigate('CreateEventScreen')} />
     </Background>

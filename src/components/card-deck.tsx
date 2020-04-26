@@ -4,11 +4,12 @@ import ScrollView from './scroll-view';
 
 type Props = {
     tabLabel?: string,
-    children: React.ReactNode;
+    children: React.ReactNode,
+    onRefresh?: () => Promise<any>,
 };
 
-const CardDeck = ({ children }: Props) => (
-    <ScrollView style={styles.deck}>{children}</ScrollView>
+const CardDeck = ({ children, onRefresh }: Props) => (
+    <ScrollView onRefresh={onRefresh ? onRefresh : undefined} style={styles.deck}>{children}</ScrollView>
 );
 
 const styles = StyleSheet.create({
