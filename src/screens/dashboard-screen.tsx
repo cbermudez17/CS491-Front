@@ -1,5 +1,4 @@
 import React, { memo, useState, useEffect } from 'react';
-import { Text } from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Background from '../components/background';
 import Card from '../components/card';
@@ -19,24 +18,8 @@ const DashboardScreen = ({ navigation }: Props) => {
     const [invitedEvents, setInvitedEvents] = useState([]);
     const [globalEvents, setGlobalEvents] = useState([]);
 
-    const localizeDate = (date: string, time: string) => {
-        let year = date.substr(0, 4), month = date.substr(5, 2), day = date.substr(8),
-        hour = parseInt(time.substr(0, 2)), minutes = time.substr(3), meridian = 'AM';
-        if (hour == 0) {
-            hour = 12;
-        } else if (hour >= 12) {
-            meridian = 'PM';
-            if (hour > 12) {
-                hour -= 12;
-            }
-        }
-        return `${month}/${day}/${year} ${hour}:${minutes}${meridian}`;
-    };
-
     const eventToCard = (event: Event) => (
-        <Card key={event.username+event.name} title={event.name} location={event.location} date={localizeDate(event.date, event.time)} host={event.username}>
-            <Text>{event.description}</Text>
-        </Card>
+        <Card key={event.username+event.name} event={event} navigation={navigation} />
     );
 
     useEffect(() => {

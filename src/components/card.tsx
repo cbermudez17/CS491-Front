@@ -1,75 +1,63 @@
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Share } from 'react-native';
-import { Card as PaperCard, Button, Modal, IconButton, Surface } from 'react-native-paper';
+import { Card as PaperCard, IconButton, Surface } from 'react-native-paper';
 import { theme } from '../theme';
-import { Location } from '../types';
+import { Event, Navigation } from '../types';
+import { localizeDate } from '../util';
 
 type Props = {
-  title: string,
-  location: Location,
-  uri?: string,
-  date: string,
-  host: string,
-  children: React.ReactNode;
+  navigation: Navigation,
+  event: Event,
 };
 
-const shareMedia = async (title: string) => {
-  try {
-    const message = 'Check out ' + title + ' on Let\'s Hang!'
-    const result = await Share.share({ message });
+const Card = ({ navigation, event }: Props) => {
 
-    if (result.action === Share.sharedAction) {
-      if (result.activityType) {
-        alert("Sent");
-        // shared with activity type of result.activityType
-      } else {
-        // shared
+  const shareMedia = async (title: string) => {
+    try {
+      const message = 'Check out ' + title + ' on Let\'s Hang!'
+      const result = await Share.share({ message });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          alert("Sent");
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
       }
-    } else if (result.action === Share.dismissedAction) {
-      // dismissed
+    } catch (error) {
+      alert(error.message);
     }
-  } catch (error) {
-    alert(error.message);
-  }
-};
-
-const Card = ({ title, location, uri = 'https://picsum.photos/700', date, host, children }: Props) => {
-  const [pressed, toggle] = useState(false);
+  };
 
   return (
     <Surface style={styles.container}>
-      <TouchableOpacity onPress={() => toggle(!pressed)}>
+      <TouchableOpacity onPress={() => navigation.navigate('DetailsScreen', { event: JSON.stringify(event) })}>
         <PaperCard>
-          <PaperCard.Cover source={{ uri }} />
-          <PaperCard.Title title={title} />
+          <PaperCard.Cover source={{ uri: 'https://picsum.photos/700' }} />
+          <PaperCard.Title title={event.name} />
           <PaperCard.Content>
             <View>
-              <Text style={styles.subtitle}>{location.name}</Text>
+              <Text style={styles.subtitle}>{event.location.name}</Text>
             </View>
             <View>
-              <Text style={styles.subtitle}>{date}</Text>
+              <Text style={styles.subtitle}>{localizeDate(event.date, event.time)}</Text>
             </View>
             <View>
-              <Text style={styles.subtitle}>{host}</Text>
+              <Text style={styles.subtitle}>{event.username}</Text>
             </View>
-            <View style={{flexDirection: 'row'}}>
-              <IconButton icon="share" size={20} color={theme.colors.secondary} animated={true} onPress={() => shareMedia(title)} />
+            <View style={{ flexDirection: 'row' }}>
+              <IconButton icon="share" size={20} color={theme.colors.secondary} animated={true} onPress={() => shareMedia(event.name)} />
               <IconButton icon="content-save" size={20} color={theme.colors.secondary} />
               <IconButton icon="calendar-question" size={20} color={theme.colors.secondary} />
             </View>
           </PaperCard.Content>
         </PaperCard>
       </TouchableOpacity>
-
-      <Modal visible={pressed} contentContainerStyle={styles.modal}>
-        <View style={styles.description}>
-          {children}
-        </View>
-        <View>
-          <Button onPress={() => toggle(!pressed)}>Go back</Button>
-        </View>
-      </Modal>
-    </Surface>);
+    </Surface>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -80,15 +68,6 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     marginVertical: 15,
     elevation: 4,
-  },
-  modal: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 7,
-    backgroundColor: theme.colors.surface,
-  },
-  description: {
-    padding: 20,
   },
   subtitle: {
     color: "grey",
