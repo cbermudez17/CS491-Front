@@ -8,6 +8,7 @@ import {
     CreateEventScreen,
     ParticipantsScreen,
     ProfileScreen,
+    DetailsScreen,
 } from './screens';
 import { Platform } from 'react-native';
 import { theme } from './theme';
@@ -23,6 +24,7 @@ const Router = createStackNavigator(
         CreateEventScreen: {screen: CreateEventScreen, navigationOptions: {title: "Create New Event"}},
         ParticipantsScreen: {screen: ParticipantsScreen, navigationOptions: {title: "Invite Friends"}},
         ProfileScreen: {screen: ProfileScreen, navigationOptions: {title: "User Profile"}},
+        DetailsScreen: {screen: DetailsScreen, navigationOptions: {title: "Event Details"}},
     },
     {
         initialRouteName: 'LoginScreen',
@@ -31,7 +33,9 @@ const Router = createStackNavigator(
             header: ({scene, previous, navigation}) => {
                 const { options } = scene.descriptor;
                 const title =
-                    options.headerTitle !== undefined
+                    navigation.getParam('title', undefined) !== undefined
+                    ? navigation.getParam('title')
+                    : options.headerTitle !== undefined
                     ? options.headerTitle
                     : options.title !== undefined
                     ? options.title

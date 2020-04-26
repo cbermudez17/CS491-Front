@@ -65,5 +65,35 @@ export const retrieveData = async (key: string) => {
 export const removeData = async (...keys: Array<string>) =>
     await AsyncStorage.multiRemove(keys.map(key => '@LetsHangStore:'+key));
 
-export const resetNavigatorStack = (navigation: Navigation, routeName: string, params?) =>
+export const resetNavigatorStack = (navigation: Navigation, routeName: string, params?: object) =>
     navigation.reset([NavigationActions.navigate({routeName, params})], 0);
+
+export const localizeDate = (date: string, time: string) => {
+    let year$ = date.substr(0, 4), month$ = date.substr(5, 2), day$ = date.substr(8),
+    hour$ = time.substr(0, 2), minutes$ = time.substr(3), meridian = 'AM';
+    
+    let d = new Date();
+    d.setUTCFullYear(parseInt(year$));
+    d.setUTCMonth(parseInt(month$) - 1);
+    d.setUTCDate(parseInt(day$));
+    d.setUTCHours(parseInt(hour$));
+    d.setUTCMinutes(parseInt(minutes$));
+
+    let year = d.getFullYear(),
+    month = d.getMonth() + 1,
+    day = d.getDate(),
+    hour = d.getHours(),
+    minutes = d.getMinutes();
+
+    minutes$ = minutes < 10 ? '0' + minutes : minutes.toString();
+
+    if (hour == 0) {
+        hour = 12;
+    } else if (hour >= 12) {
+        meridian = 'PM';
+        if (hour > 12) {
+            hour -= 12;
+        }
+    }
+    return `${month}/${day}/${year} ${hour}:${minutes$}${meridian}`;
+};
