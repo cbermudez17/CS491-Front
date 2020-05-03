@@ -97,3 +97,43 @@ export const localizeDate = (date: string, time: string) => {
     }
     return `${month}/${day}/${year} ${hour}:${minutes$}${meridian}`;
 };
+
+export const formatDate = (date: string) => {
+    let parsedDate = date.split(" ")[0].split("/"), time = date.split(" ")[1], month = parsedDate[0], day = parseInt(parsedDate[1]), year = parsedDate[2], meridianIndex = time.search(/[aApP]/), meridian = time.substr(meridianIndex), hour = parseInt(time.split(":")[0]), minutes = time.split(":")[1].substr(0, meridianIndex - 2);
+
+    if (meridian === "PM") {
+      let adjustedTime = hour + 12;
+      if (adjustedTime === 24) {
+        adjustedTime = 0;
+      }
+      hour = adjustedTime;
+    }
+    else if (hour === 12) {
+      hour = 0;
+    }
+
+    let startDate = new Date();
+    startDate.setFullYear(parseInt(year));
+    startDate.setMonth(parseInt(month) - 1);
+    startDate.setDate(day);
+    startDate.setHours(hour);
+    startDate.setMinutes(parseInt(minutes));
+    startDate.setSeconds(0,0)
+    
+    // making ending time 2 hours later for now
+    hour += 2;
+    if (hour >= 24) {
+      hour =- 24;
+      day += 1;
+    }
+
+    let endDate = new Date();
+    endDate.setFullYear(parseInt(year));
+    endDate.setMonth(parseInt(month) - 1);
+    endDate.setDate(day);
+    endDate.setHours(hour);
+    endDate.setMinutes(parseInt(minutes));
+    endDate.setSeconds(0, 0);
+
+    return { start: startDate, end: endDate };
+};

@@ -1,9 +1,10 @@
 import React, { memo } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Share } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Share, Platform} from 'react-native';
 import { Card as PaperCard, IconButton, Surface } from 'react-native-paper';
 import { theme } from '../theme';
 import { Event, Navigation } from '../types';
-import { localizeDate } from '../util';
+import { localizeDate, formatDate } from '../util';
+import * as Calendar from 'expo-calendar';
 
 type Props = {
   navigation: Navigation,
@@ -32,7 +33,24 @@ const Card = ({ navigation, event }: Props) => {
     }
   };
 
-  return (
+  const saveToCalendar = async (date: string) => {
+    const { status } = await Calendar.requestCalendarPermissionsAsync();
+    if (status === 'granted') {
+      const calendars = await Calendar.getCalendarsAsync();
+      if (Platform.OS == 'ios') {
+        const calendar = await Calendar.getDefaultCalendarAsync();
+        const eventDates = formatDate(date);
+        const details = { title: event.name, startDate: eventDates.start, endDate: eventDates.end, location: event.location.name, notes: event.description};
+        const eventId = await Calendar.createEventAsync(calendar.id, details);
+        alert("Event added to phone calendar!");
+      }
+      else {
+        alert("Android option is still being developed!");
+      }
+    }
+  };
+
+return (
     <Surface style={styles.container}>
       <TouchableOpacity onPress={() => navigation.navigate('DetailsScreen', { event: JSON.stringify(event) })}>
         <PaperCard>
@@ -50,8 +68,8 @@ const Card = ({ navigation, event }: Props) => {
             </View>
             <View style={{ flexDirection: 'row' }}>
               <IconButton icon="share" size={20} color={theme.colors.secondary} animated={true} onPress={() => shareMedia(event.name)} />
+              <IconButton icon="calendar-export" size={20} color={theme.colors.secondary} animated={true} onPress={() => saveToCalendar(localizeDate(event.date, event.time))}/>
               <IconButton icon="content-save" size={20} color={theme.colors.secondary} />
-              <IconButton icon="calendar-question" size={20} color={theme.colors.secondary} />
             </View>
           </PaperCard.Content>
         </PaperCard>
