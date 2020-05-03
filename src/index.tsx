@@ -9,6 +9,7 @@ import {
     ParticipantsScreen,
     ProfileScreen,
     DetailsScreen,
+    SearchScreen,
 } from './screens';
 import { Platform } from 'react-native';
 import { theme } from './theme';
@@ -25,6 +26,7 @@ const Router = createStackNavigator(
         ParticipantsScreen: {screen: ParticipantsScreen, navigationOptions: {title: "Invite Friends"}},
         ProfileScreen: {screen: ProfileScreen, navigationOptions: {title: "User Profile"}},
         DetailsScreen: {screen: DetailsScreen, navigationOptions: {title: "Event Details"}},
+        SearchScreen: {screen: SearchScreen, navigationOptions: {title: "Search"}},
     },
     {
         initialRouteName: 'LoginScreen',
@@ -45,6 +47,7 @@ const Router = createStackNavigator(
                         {previous ? <Appbar.BackAction onPress={() => navigation.goBack()} /> : null}
                         <Appbar.Content title={title} color={theme.colors.background} />
                         {scene.route.routeName == 'Dashboard' ? <Appbar.Action icon="account" color={theme.colors.background} onPress={() => navigation.navigate('ProfileScreen')} /> : null}
+                        {scene.route.routeName == 'Dashboard' ? <Appbar.Action icon="magnify" color={theme.colors.background} onPress={() => navigation.navigate('SearchScreen')} /> : null}
                         {scene.route.routeName == 'Dashboard' || scene.route.routeName == 'ProfileScreen' ? <LogoutButton/> : null}
                         {scene.route.routeName == 'ParticipantsScreen' ? <SkipButton/> : null}
                     </Appbar.Header>)

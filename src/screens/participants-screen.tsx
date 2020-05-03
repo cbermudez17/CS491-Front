@@ -83,9 +83,8 @@ const styles = StyleSheet.create({
     item: {
         backgroundColor: theme.colors.surface,
         borderColor: theme.colors.secondary,
-        borderWidth: 1,
-        borderRadius: 5,
-        marginBottom: 5,
+        borderBottomWidth: 0.25,
+        padding: 0,
     },
     error: {
         fontSize: 14,

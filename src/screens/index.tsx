@@ -6,3 +6,4 @@ export { default as CreateEventScreen } from './create-event-screen';
 export { default as ParticipantsScreen } from './participants-screen';
 export { default as ProfileScreen } from './profile-screen';
 export { default as DetailsScreen } from './details-screen';
+export { default as SearchScreen } from './search-screen';
