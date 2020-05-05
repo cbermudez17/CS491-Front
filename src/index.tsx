@@ -19,8 +19,8 @@ import { Appbar } from 'react-native-paper';
 
 const Router = createStackNavigator(
     {
-        LoginScreen: {screen: LoginScreen, navigationOptions: {title: "Login"}},
-        RegisterScreen: {screen: RegisterScreen, navigationOptions: {title: "Sign Up"}},
+        LoginScreen,
+        RegisterScreen,
         Dashboard: {screen: Dashboard, navigationOptions: {title: "Let's Hang"}},
         CreateEventScreen: {screen: CreateEventScreen, navigationOptions: {title: "Create New Event"}},
         ParticipantsScreen: {screen: ParticipantsScreen, navigationOptions: {title: "Invite Friends"}},
@@ -41,10 +41,10 @@ const Router = createStackNavigator(
                     ? options.headerTitle
                     : options.title !== undefined
                     ? options.title
-                    : scene.route.routeName;
+                    : '';
                 return (
                     <Appbar.Header>
-                        {previous ? <Appbar.BackAction onPress={() => navigation.goBack()} /> : null}
+                        {previous ? <Appbar.BackAction onPress={() => navigation.goBack()} color={theme.colors.background} /> : null}
                         <Appbar.Content title={title} color={theme.colors.background} />
                         {scene.route.routeName == 'Dashboard' ? <Appbar.Action icon="account" color={theme.colors.background} onPress={() => navigation.navigate('ProfileScreen')} /> : null}
                         {scene.route.routeName == 'Dashboard' ? <Appbar.Action icon="magnify" color={theme.colors.background} onPress={() => navigation.navigate('SearchScreen')} /> : null}

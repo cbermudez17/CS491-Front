@@ -12,7 +12,10 @@ const Button = ({ mode, style, children, ...props }: Props) => (
             mode === 'outlined' && { backgroundColor: theme.colors.surface },
             style,
         ]}
-        labelStyle={styles.text}
+        labelStyle={[
+            styles.text,
+            mode === 'contained' && { color: theme.colors.surface },
+        ]}
         mode={mode}
         {...props}
     >

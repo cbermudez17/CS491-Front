@@ -50,7 +50,7 @@ const LoginScreen = ({ navigation }: Props) => {
     return (
         <Background>
             <Logo />
-            <Header>Welcome back.</Header>
+            <Header>Welcome Back</Header>
             {errorText ? <Text style={styles.error}>{errorText}</Text> : null}
             <TextInput
                 label="Email"
