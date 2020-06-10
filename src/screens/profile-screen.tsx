@@ -31,19 +31,19 @@ const ProfileScreen = ({ navigation }: Props) => {
             } else {
                 // Looking at another user's profile
                 setIsSelf(false);
-                postData('http://24.190.49.248:8000/getFriends', {username: selfUser})
+                postData('/getFriends', {username: selfUser})
                 .then(data => {
                     let friends = data.friends.filter(friend => friend.username == user);
                     setFriendStatus(friends.length == 0 ? 'none' : friends[0].status);
                 });
             }
-            postData('http://24.190.49.248:8000/checkUserExists', {username: user})
+            postData('/checkUserExists', {username: user})
             .then(data => {
                 if (data.status == 'success') {
                     setUsername(data.username);
                     setFirstname(data.firstname);
                     setLastname(data.lastname);
-                    postData('http://24.190.49.248:8000/getFriends', {username: user})
+                    postData('/getFriends', {username: user})
                     .then(data => setFriendsCount(data.friends.filter(friend => friend.status == 'accepted').length));
                 }
             });
@@ -51,7 +51,7 @@ const ProfileScreen = ({ navigation }: Props) => {
     }, [username]);
 
     const _addFriend = async () => {
-        postData('http://24.190.49.248:8000/friendRequest', {user: {username: await retrieveData('username')}, request: {username}})
+        postData('/friendRequest', {user: {username: await retrieveData('username')}, request: {username}})
         .then(data => {
             if (data.status == 'success') {
                 setFriendStatus('pending');
@@ -60,7 +60,7 @@ const ProfileScreen = ({ navigation }: Props) => {
     };
 
     const _removeFriend = async () => {
-        postData('http://24.190.49.248:8000/updateFriendRequest', {user: {username: await retrieveData('username')}, request: {username}, type: 'reject'})
+        postData('/updateFriendRequest', {user: {username: await retrieveData('username')}, request: {username}, type: 'reject'})
         .then(data => {
             if (data.status == 'success') {
                 setFriendStatus('none');
@@ -70,7 +70,7 @@ const ProfileScreen = ({ navigation }: Props) => {
     };
 
     const _accept = async () => {
-        postData('http://24.190.49.248:8000/updateFriendRequest', {user: {username: await retrieveData('username')}, request: {username}, type: 'accept'})
+        postData('/updateFriendRequest', {user: {username: await retrieveData('username')}, request: {username}, type: 'accept'})
         .then(data => {
             if (data.status == 'success') {
                 setFriendStatus('accepted');
@@ -80,7 +80,7 @@ const ProfileScreen = ({ navigation }: Props) => {
     };
 
     const _reject = async () => {
-        postData('http://24.190.49.248:8000/updateFriendRequest', {user: {username: await retrieveData('username')}, request: {username}, type: 'reject'})
+        postData('/updateFriendRequest', {user: {username: await retrieveData('username')}, request: {username}, type: 'reject'})
         .then(data => {
             if (data.status == 'success') {
                 setFriendStatus('none');

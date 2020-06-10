@@ -108,7 +108,7 @@ const CreateEventScreen = ({ navigation }: Props) => {
 
         let username = await retrieveData('username');
 
-        postData('http://24.190.49.248:8000/createEvent', {
+        postData('/createEvent', {
             name: eventName.value,
             username,
             description: description.value,

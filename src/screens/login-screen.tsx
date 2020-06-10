@@ -34,7 +34,7 @@ const LoginScreen = ({ navigation }: Props) => {
             return;
         }
 
-        postData('http://24.190.49.248:8000/login', {email: email.value, password: password.value})
+        postData('/login', {email: email.value, password: password.value})
         .then(data => {
             if (data.status == 'success') {
                 storeData('username', data.username);

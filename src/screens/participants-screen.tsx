@@ -17,7 +17,7 @@ const ParticipantsScreen = ({ navigation }: Props) => {
     const [errorText, setErrorText] = useState('');
     
     const _onInvitePressed = () => {
-        postData('http://24.190.49.248:8000/inviteEvent', {
+        postData('/inviteEvent', {
             oid: navigation.getParam('oid'),
             users: contacts.filter(contact => contact.invited).map(contact => ({username: contact.username})),
         })
@@ -39,7 +39,7 @@ const ParticipantsScreen = ({ navigation }: Props) => {
         }));
     
     useEffect(() => {
-        retrieveData('username').then(username => postData('http://24.190.49.248:8000/getFriends', {username}))
+        retrieveData('username').then(username => postData('/getFriends', {username}))
         .then(data => {
             setContacts(data.friends.filter(friend => !friend.hasOwnProperty('status') || friend.status == 'accepted')
             .map(friend => ({username: friend.username, firstname: friend.firstname, lastname: friend.lastname, invited: false})));

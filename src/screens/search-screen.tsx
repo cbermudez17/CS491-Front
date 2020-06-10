@@ -28,7 +28,7 @@ const SearchScreen = ({ navigation }: Props) => {
     const _onChangeSearch = (text: string) => {
         setSearchQuery(text);
         if (text.trim().length > 2) {
-            postData('http://24.190.49.248:8000/searchUsername', {username: text.trim()})
+            postData('/searchUsername', {username: text.trim()})
             .then(data => setContacts(data.usernames.map(mapUserToResult)));
         } else {
             setContacts([]);

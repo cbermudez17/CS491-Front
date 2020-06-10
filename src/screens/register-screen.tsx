@@ -50,7 +50,7 @@ const RegisterScreen = ({ navigation }: Props) => {
             return;
         }
 
-        postData('http://24.190.49.248:8000/register', {
+        postData('/register', {
             firstname: firstname.value,
             lastname: lastname.value,
             username: username.value,

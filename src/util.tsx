@@ -1,6 +1,7 @@
 import { Alert, AsyncStorage } from "react-native";
 import { Navigation } from "./types";
 import { NavigationActions } from "react-navigation";
+import Config from "./config.json";
 
 export const emailValidator = (email: string) => {
     const re = /\S+@\S+\.\S+/;
@@ -41,7 +42,10 @@ export const emptyValidator = (value: string, valueName: string) => {
     return '';
 };
 
-export const postData = (url: string = '', data: object = {}) => {
+export const postData = (url: string, data: object = {}) => {
+    if (!url.startsWith('http')) {
+        url = Config.server[Config.stage] + url;
+    }
     return fetch(url, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},

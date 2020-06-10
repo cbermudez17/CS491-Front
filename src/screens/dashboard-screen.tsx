@@ -26,7 +26,7 @@ const DashboardScreen = ({ navigation }: Props) => {
     useEffect(() => {
         retrieveData('username').then(username => {
             setUsername(username);
-            return postData('http://24.190.49.248:8000/getEvents', {username});
+            return postData('/getEvents', {username});
         })
         .then(data => {
             let acceptedEvents = [], notAcceptedEvents = [];
@@ -38,7 +38,7 @@ const DashboardScreen = ({ navigation }: Props) => {
     }, [username]);
 
     const onRefresh = () => {
-        return postData('http://24.190.49.248:8000/getEvents', {username})
+        return postData('/getEvents', {username})
         .then(data => {
             let acceptedEvents = [], notAcceptedEvents = [];
             data.friends.forEach((event: Event) => event.status == 'accepted' ? acceptedEvents.push(event) : notAcceptedEvents.push(event));
