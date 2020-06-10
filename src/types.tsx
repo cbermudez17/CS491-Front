@@ -22,6 +22,7 @@ export type Location = {
 };
 
 export type Event = {
+    oid: string,
     name: string,
     username: string,
     description: string,

@@ -5,7 +5,7 @@ import Background from '../components/background';
 import Button from '../components/button';
 import { theme } from '../theme';
 import { Navigation, Event } from '../types';
-import { retrieveData, localizeDate } from '../util';
+import { retrieveData, localizeDate, postData } from '../util';
 import { Subheading, Headline } from 'react-native-paper';
 import ScrollView from '../components/scroll-view';
 
@@ -17,6 +17,24 @@ const DetailsScreen = ({ navigation }: Props) => {
     const event: Event = JSON.parse(navigation.getParam('event'));
     const [username, setUsername] = useState('');
     retrieveData('username').then(setUsername);
+
+    const acceptInvitation = () => {
+        postData('/updateEventStatus', {
+            oid: event.oid,
+            username,
+            status: 'accepted'
+        })
+        .then(() => navigation.goBack());
+    };
+    
+    const declineInvitation = () => {
+        postData('/updateEventStatus', {
+            oid: event.oid,
+            username,
+            status: 'declined'
+        })
+        .then(() => navigation.goBack());
+    };
 
     return (
         <Background>
@@ -42,10 +60,18 @@ const DetailsScreen = ({ navigation }: Props) => {
                 </View>}
                 {event.username != username && event.hasOwnProperty('status') && event.status == 'invited' &&
                     (<View style={{flexDirection: 'row'}}>
-                        <Button mode="contained" style={[styles.button, {backgroundColor: theme.colors.green}]}>
+                        <Button
+                            mode="contained"
+                            style={[styles.button, {backgroundColor: theme.colors.green}]}
+                            onPress={acceptInvitation}
+                        >
                             Accept
                         </Button>
-                        <Button mode="contained" style={[styles.button, {backgroundColor: theme.colors.red}]}>
+                        <Button
+                            mode="contained"
+                            style={[styles.button, {backgroundColor: theme.colors.red}]}
+                            onPress={declineInvitation}
+                        >
                             Decline
                         </Button>
                     </View>
