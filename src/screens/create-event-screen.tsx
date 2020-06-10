@@ -118,7 +118,13 @@ const CreateEventScreen = ({ navigation }: Props) => {
             time: extractUTCTime(time),
             type: isPublic ? 'public' : 'private',
         })
-        .then(data => resetNavigatorStack(navigation, 'ParticipantsScreen', {oid: data["_id"]["$oid"]}));
+        .then(data => {
+            if (isPublic) {
+                resetNavigatorStack(navigation, 'Dashboard');
+            } else {
+                resetNavigatorStack(navigation, 'ParticipantsScreen', {oid: data["_id"]["$oid"]});
+            }
+        });
     };
 
     return (
