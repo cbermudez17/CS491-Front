@@ -1,7 +1,7 @@
 import { Alert, AsyncStorage } from "react-native";
 import { Navigation } from "./types";
 import { NavigationActions } from "react-navigation";
-import Config from "./config.json";
+import Config from "./../server-config.json";
 
 export const emailValidator = (email: string) => {
     const re = /\S+@\S+\.\S+/;
