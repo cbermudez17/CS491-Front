@@ -23,10 +23,9 @@ const ProfileScreen = ({ navigation }: Props) => {
     useEffect(() => {
         retrieveData('username')
         .then(selfUser => {
-            let user = navigation.getParam('username', undefined);
-            if (user == undefined) {
+            let user = navigation.getParam('username', selfUser);
+            if (user == selfUser) {
                 // Looking at your own profile
-                user = selfUser;
                 setIsSelf(true);
             } else {
                 // Looking at another user's profile
