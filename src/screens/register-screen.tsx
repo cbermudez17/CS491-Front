@@ -96,7 +96,7 @@ const RegisterScreen = ({ navigation }: Props) => {
                     label="Username"
                     returnKeyType="next"
                     value={username.value}
-                    onChangeText={text => setUsername({ value: text, error: '' })}
+                    onChangeText={text => setUsername({ value: text.toLowerCase(), error: '' })}
                     error={!!username.error}
                     errorText={username.error}
                 />
